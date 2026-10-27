@@ -2562,7 +2562,7 @@
  * Currently handles M108, M112, M410, M876
  * NOTE: Not yet implemented for all platforms.
  */
-//#define EMERGENCY_PARSER
+#define EMERGENCY_PARSER   // InstanceLabs: M108/M112/M410 act on receipt (USB CDC hook, HAL/STM32/usb_serial.cpp)
 
 /**
  * Realtime Reporting (requires EMERGENCY_PARSER)

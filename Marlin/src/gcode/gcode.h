@@ -317,6 +317,7 @@
  * M928 - Start SD logging: "M928 filename.gco". Stop with M29. (Requires SDSUPPORT)
  * M993 - Backup SPI Flash to SD
  * M994 - Load a Backup from SD to SPI Flash
+ * M990 - InstanceLabs host-silence watchdog: S<ms> arm, S0 disarm. (Requires IL_HOST_WATCHDOG)
  * M995 - Touch screen calibration for TFT display
  * M997 - Perform in-application firmware update
  * M999 - Restart after being stopped by error
@@ -1215,6 +1216,10 @@ private:
   #if BOTH(SPI_FLASH, HAS_MEDIA)
     static void M993();
     static void M994();
+  #endif
+
+  #if ENABLED(IL_HOST_WATCHDOG)
+    static void M990(); // InstanceLabs host-silence watchdog
   #endif
 
   #if ENABLED(PLATFORM_M997_SUPPORT)

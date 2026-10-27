@@ -2565,6 +2565,14 @@
 #define EMERGENCY_PARSER   // InstanceLabs: M108/M112/M410 act on receipt (USB CDC hook, HAL/STM32/usb_serial.cpp)
 
 /**
+ * InstanceLabs host-silence watchdog (M990)
+ * "M990 S<ms>" arms, "M990 S0" disarms, "M990" reports. Disarmed at boot.
+ * On timeout: quick-stop, FAN3/FAN2/FAN1/FAN0 off, J (B) driver off, "Error:host watchdog".
+ * See src/feature/instancelabs/host_watchdog.h. Advertised as Cap:HOST_WATCHDOG in M115.
+ */
+#define IL_HOST_WATCHDOG
+
+/**
  * Realtime Reporting (requires EMERGENCY_PARSER)
  *
  * - Report position and state of the machine (like Grbl).

@@ -220,6 +220,9 @@ void GcodeSuite::M115() {
     // CONFIG_EXPORT
     cap_line(F("CONFIG_EXPORT"), ENABLED(CONFIGURATION_EMBEDDING));
 
+    // InstanceLabs host-silence watchdog (M990)
+    cap_line(F("HOST_WATCHDOG"), ENABLED(IL_HOST_WATCHDOG));
+
     // Machine Geometry
     #if ENABLED(M115_GEOMETRY_REPORT)
       constexpr xyz_pos_t bmin{0},

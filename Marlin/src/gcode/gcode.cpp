@@ -1070,6 +1070,10 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 994: M994(); break;                                  // M994: Load a Backup from SD to SPI Flash
       #endif
 
+      #if ENABLED(IL_HOST_WATCHDOG)
+        case 990: M990(); break;                                  // M990: InstanceLabs host-silence watchdog
+      #endif
+
       #if ENABLED(TOUCH_SCREEN_CALIBRATION)
         case 995: M995(); break;                                  // M995: Touch screen calibration for TFT display
       #endif

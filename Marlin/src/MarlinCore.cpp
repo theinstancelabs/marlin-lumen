@@ -267,6 +267,10 @@
   #include "feature/rs485.h"
 #endif
 
+#if ENABLED(IL_HOST_WATCHDOG)
+  #include "feature/instancelabs/host_watchdog.h"
+#endif
+
 PGMSTR(M112_KILL_STR, "M112 Shutdown");
 
 MarlinState marlin_state = MF_INITIALIZING;
@@ -421,6 +425,8 @@ void startOrResumeJob() {
 inline void manage_inactivity(const bool no_stepper_sleep=false) {
 
   queue.get_available_commands();
+
+  TERN_(IL_HOST_WATCHDOG, host_watchdog.idle()); // InstanceLabs: M990 host-silence watchdog
 
   const millis_t ms = millis();
 

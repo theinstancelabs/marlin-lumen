@@ -37,6 +37,10 @@ GCodeQueue queue;
 #include "../MarlinCore.h"
 #include "../core/bug_on.h"
 
+#if ENABLED(IL_HOST_WATCHDOG)
+  #include "../feature/instancelabs/host_watchdog.h"
+#endif
+
 #if ENABLED(PRINTER_EVENT_LEDS)
   #include "../feature/leds/printer_event_leds.h"
 #endif
@@ -470,6 +474,8 @@ void GCodeQueue::get_serial_commands() {
         // Reset our state, continue if the line was empty
         if (process_line_done(serial.input_state, serial.line_buffer, serial.count))
           continue;
+
+        TERN_(IL_HOST_WATCHDOG, host_watchdog.host_activity()); // InstanceLabs: any host line restarts M990
 
         char* command = serial.line_buffer;
 

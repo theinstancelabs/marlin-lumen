@@ -30,6 +30,8 @@
 
 #include "MarlinCore.h"
 
+#include "feature/instancelabs/outputs_off.h"
+
 #include "HAL/shared/Delay.h"
 #include "HAL/shared/esp_wifi.h"
 #include "HAL/shared/cpu_exception/exception_hook.h"
@@ -906,6 +908,7 @@ void idle(const bool no_stepper_sleep/*=false*/) {
  * After this the machine will need to be reset.
  */
 void kill(FSTR_P const lcd_error/*=nullptr*/, FSTR_P const lcd_component/*=nullptr*/, const bool steppers_off/*=false*/) {
+  il_outputs_off(); // InstanceLabs: valve, pump and left outputs off before anything else
   thermalManager.disable_all_heaters();
 
   TERN_(HAS_CUTTER, cutter.kill()); // Full cutter shutdown including ISR control
@@ -943,6 +946,8 @@ void minkill(const bool steppers_off/*=false*/) {
 
   // Reiterate heaters off
   thermalManager.disable_all_heaters();
+
+  il_outputs_off(); // InstanceLabs: reiterate MOSFET outputs off (register writes only)
 
   TERN_(HAS_CUTTER, cutter.kill());  // Reiterate cutter shutdown
 

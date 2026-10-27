@@ -319,7 +319,7 @@
  * M994 - Load a Backup from SD to SPI Flash
  * M990 - InstanceLabs host-silence watchdog: S<ms> arm, S0 disarm. (Requires IL_HOST_WATCHDOG)
  * M995 - Touch screen calibration for TFT display
- * M997 - Perform in-application firmware update
+ * M997 - Perform in-application firmware update. (With IL_M997_DFU: enter the STM32 DFU bootloader)
  * M999 - Restart after being stopped by error
  *
  * D... - Custom Development G-code. Add hooks to 'gcode_D.cpp' for developers to test features. (Requires MARLIN_DEV_MODE)

@@ -4369,6 +4369,13 @@
 //
 #define PINS_DEBUGGING
 
+//
+// InstanceLabs: M997 enters the STM32F4 system DFU bootloader (USB 0483:df11),
+// so flashing needs no BOOT+RESET buttons. Outputs off and steppers disabled first.
+// See src/feature/instancelabs/dfu_bootloader.cpp
+//
+#define IL_M997_DFU
+
 // Enable Tests that will run at startup and produce a report
 //#define MARLIN_TEST_BUILD
 

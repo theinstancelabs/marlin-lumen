@@ -1218,13 +1218,16 @@
  * Override with M92
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 320, 320, 40, 4.44, 4.44}
+// InstanceLabs: Z 40 -> 160 steps/mm (Z_MICROSTEPS 8 -> 32): 0.025 -> 0.00625 mm per microstep.
+// The full step is unchanged (0.2 mm), so every mm-based Z setting stays as it was.
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 320, 320, 160, 4.44, 4.44}
 
 /**
  * Default Max Feed Rate (linear=mm/s, rotational=°/s)
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
+// InstanceLabs: B (J, auger) max feedrate already 50000 deg/s (>= 2160 deg/s = 6 rev/s); unchanged.
 #define DEFAULT_MAX_FEEDRATE          { 1500, 1500, 500, 50000, 50000}
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
@@ -1238,7 +1241,8 @@
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 10000, 10000, 10000, 10000, 10000}
+// InstanceLabs: B (J, auger) 10000 -> 20000 deg/s^2 (faster dispense start/stop). X, Y, Z, A unchanged.
+#define DEFAULT_MAX_ACCELERATION      { 10000, 10000, 10000, 10000, 20000}
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)

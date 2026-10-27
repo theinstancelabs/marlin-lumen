@@ -2897,7 +2897,7 @@
   #if AXIS_IS_TMC_CONFIG(Z)
     #define Z_CURRENT       800
     #define Z_CURRENT_HOME  Z_CURRENT
-    #define Z_MICROSTEPS      8
+    #define Z_MICROSTEPS     32   // InstanceLabs: was 8; Z steps/mm 40 -> 160 to match
     #define Z_RSENSE          0.11
     #define Z_CHAIN_POS      -1
     //#define Z_INTERPOLATE  true
@@ -2945,7 +2945,8 @@
   #endif
 
   #if AXIS_IS_TMC_CONFIG(J)
-    #define J_CURRENT      200
+    #define J_CURRENT      540  // InstanceLabs: was 200. LDO auger motor 0.67 A/phase; with the
+                                // 0.11 ohm RSENSE assumption vs 0.12 ohm fitted, ~0.50 A real (plan s10 item 7)
     #define J_CURRENT_HOME J_CURRENT
     #define J_MICROSTEPS     8
     #define J_RSENSE         0.11

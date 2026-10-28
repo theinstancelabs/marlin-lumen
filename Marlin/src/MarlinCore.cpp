@@ -915,6 +915,9 @@ void idle(const bool no_stepper_sleep/*=false*/) {
  */
 void kill(FSTR_P const lcd_error/*=nullptr*/, FSTR_P const lcd_component/*=nullptr*/, const bool steppers_off/*=false*/) {
   il_outputs_off(); // InstanceLabs: valve, pump and left outputs off before anything else
+  // InstanceLabs: stop motion now. minkill() below spins ~0.6 s with interrupts on before cli(),
+  // and the step ISR would keep running queued moves (auger feed, Z plunge) until then.
+  planner.quick_stop();
   thermalManager.disable_all_heaters();
 
   TERN_(HAS_CUTTER, cutter.kill()); // Full cutter shutdown including ISR control

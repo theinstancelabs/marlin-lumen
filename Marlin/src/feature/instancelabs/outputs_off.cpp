@@ -21,6 +21,15 @@
 
 #define _IL_FAN_OFF(N) do{ thermalManager.fan_speed[N] = 0; _IL_PIN_LOW(FAN##N##_PIN); }while(0)
 
+void il_right_outputs_off() {
+  #if HAS_FAN3
+    _IL_FAN_OFF(3);   // right valve first: vent the barrel
+  #endif
+  #if HAS_FAN2
+    _IL_FAN_OFF(2);   // right pump
+  #endif
+}
+
 void il_outputs_off() {
   #if HAS_FAN3
     _IL_FAN_OFF(3);   // right valve first: vent the barrel

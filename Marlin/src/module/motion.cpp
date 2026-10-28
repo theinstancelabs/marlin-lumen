@@ -25,6 +25,9 @@
  */
 
 #include "motion.h"
+
+#include "../feature/instancelabs/outputs_off.h"
+#include "../feature/instancelabs/homing_abort.h"
 #include "endstops.h"
 #include "stepper.h"
 #include "planner.h"
@@ -389,6 +392,8 @@ void home_if_needed(const bool keeplev/*=false*/) {
  */
 void quickstop_stepper() {
   planner.quick_stop();
+  il_right_outputs_off(); // InstanceLabs: vent now (valve, then pump), not ~1 s later after the wait below
+  il_note_quickstop();    // InstanceLabs: a G28 in progress ends cleanly instead of kill("Homing Failed")
   planner.synchronize();
   set_current_from_steppers_for_axis(ALL_AXES_ENUM);
   sync_plan_position();
@@ -1831,6 +1836,8 @@ void prepare_line_to_destination() {
   void do_homing_move(const AxisEnum axis, const float distance, const feedRate_t fr_mm_s=0.0, const bool final_approach=true) {
     DEBUG_SECTION(log_move, "do_homing_move", DEBUGGING(LEVELING));
 
+    if (il_homing_aborted) return; // InstanceLabs: quick-stop during G28: no further homing move
+
     const feedRate_t home_fr_mm_s = fr_mm_s ?: homing_feedrate(axis);
 
     if (DEBUGGING(LEVELING)) {
@@ -1906,7 +1913,8 @@ void prepare_line_to_destination() {
         if (axis == Z_AXIS && final_approach) probe.set_probing_paused(false);
       #endif
 
-      endstops.validate_homing_move();
+      // InstanceLabs: a move cut short by a quick-stop is not a failed homing (no kill)
+      if (!il_homing_aborted) endstops.validate_homing_move();
 
       // Re-enable stealthChop if used. Disable diag1 pin on driver.
       #if ENABLED(SENSORLESS_HOMING)
@@ -2089,6 +2097,8 @@ void prepare_line_to_destination() {
     #endif
 
     if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM(">>> homeaxis(", AS_CHAR(AXIS_CHAR(axis)), ")");
+
+    if (il_homing_aborted) return; // InstanceLabs: quick-stop during G28
 
     const int axis_home_dir = TERN0(DUAL_X_CARRIAGE, axis == X_AXIS)
                 ? TOOL_X_HOME_DIR(active_extruder) : home_dir(axis);
@@ -2335,6 +2345,9 @@ void prepare_line_to_destination() {
       // move back to homing phase if configured and capable
       backout_to_tmc_homing_phase(axis);
     #endif
+
+    // InstanceLabs: never mark an axis homed after a quick-stop cut its homing short
+    if (il_homing_aborted) return;
 
     #if IS_SCARA
 

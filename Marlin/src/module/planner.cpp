@@ -66,6 +66,7 @@
  */
 
 #include "planner.h"
+#include "../feature/instancelabs/homing_abort.h"
 #include "stepper.h"
 #include "motion.h"
 #include "temperature.h"
@@ -1831,6 +1832,7 @@ bool Planner::_buffer_steps(const xyze_long_t &target
   // This must be after get_next_free_block() because it calls idle()
   // where cleaning_buffer_counter can be changed
   if (cleaning_buffer_counter) return false;
+  if (il_homing_aborted) return false; // InstanceLabs: rest of an aborted G28 (homing_abort.h)
 
   // Fill the block with the specified movement
   if (!_populate_block(block, target
@@ -2986,6 +2988,7 @@ bool Planner::buffer_segment(const abce_pos_t &abce
 
   // If we are cleaning, do not accept queuing of movements
   if (cleaning_buffer_counter) return false;
+  if (il_homing_aborted) return false; // InstanceLabs: rest of an aborted G28 (homing_abort.h)
 
   // When changing extruders recalculate steps corresponding to the E position
   #if ENABLED(DISTINCT_E_FACTORS)

@@ -33,3 +33,14 @@
  *   outputs keep working after a non-fatal call.
  */
 void il_outputs_off();
+
+/**
+ * Right side only, valve first: FAN3 (right valve) -> FAN2 (right pump).
+ * Same pin handling as il_outputs_off(). Used by the M410 quick-stop, so
+ * the barrel vents the moment the quick-stop runs instead of about 1 s
+ * later, when the queued "M107 P3" after M410 is processed
+ * (quickstop_stepper()'s planner.synchronize() waits out
+ * cleaning_buffer_counter = TEMP_TIMER_FREQUENCY). The left vacuum
+ * (FAN1/FAN0) is not touched: a part held on N1 must not drop.
+ */
+void il_right_outputs_off();

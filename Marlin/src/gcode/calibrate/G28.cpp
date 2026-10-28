@@ -23,6 +23,7 @@
 #include "../../inc/MarlinConfig.h"
 
 #include "../gcode.h"
+#include "../../feature/instancelabs/homing_abort.h"
 
 #include "../../module/endstops.h"
 #include "../../module/planner.h"
@@ -240,6 +241,10 @@ void GcodeSuite::G28() {
     const M_StateEnum old_grblstate = M_State_grbl;
     set_and_report_grblstate(M_HOMING);
   #endif
+
+  // InstanceLabs: a quick-stop from here on ends this G28 cleanly (homing_abort.h)
+  il_homing_aborted = false;
+  il_homing_active = true;
 
   TERN_(HAS_DWIN_E3V2_BASIC, DWIN_HomingStart());
   TERN_(EXTENSIBLE_UI, ExtUI::onHomingStart());
@@ -626,6 +631,15 @@ void GcodeSuite::G28() {
       safe_delay(SENSORLESS_STALLGUARD_DELAY); // Short delay needed to settle
     #endif
   #endif // HAS_HOMING_CURRENT
+
+  // InstanceLabs: quick-stop during this G28: nothing is homed, say so (echo, not Error:,
+  // so the host's next command is not refused by a stale error)
+  il_homing_active = false;
+  if (il_homing_aborted) {
+    il_homing_aborted = false;
+    set_all_unhomed();
+    SERIAL_ECHO_MSG("G28 aborted by quick-stop: axes not homed");
+  }
 
   ui.refresh();
 

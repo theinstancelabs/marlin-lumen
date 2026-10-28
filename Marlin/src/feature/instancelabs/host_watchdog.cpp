@@ -13,6 +13,7 @@
 
 #include "host_watchdog.h"
 #include "outputs_off.h"
+#include "homing_abort.h"
 
 #include "../../gcode/gcode.h"
 #include "../../gcode/queue.h"
@@ -60,6 +61,7 @@ void HostWatchdog::trip() {
   // 1 s (Planner::busy() includes cleaning_buffer_counter = TEMP_TIMER_FREQUENCY).
   planner.quick_stop();               // Drop planned moves and abort the current one (immediate)
   il_outputs_off();                   // FAN3 valve, FAN2 pump, FAN1, FAN0
+  il_note_quickstop();                // a G28 in progress ends cleanly (homing_abort.h)
   #if HAS_J_AXIS
     stepper.disable_axis(J_AXIS);     // Auger (B). Z stays energised so the head does not drop.
   #endif

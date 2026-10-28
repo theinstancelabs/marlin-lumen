@@ -455,6 +455,12 @@ PGMSTR(str_t_heating_failed, STR_T_HEATING_FAILED);
 
     NOMORE(speed, 255U);
 
+    #if ENABLED(IL_ONOFF_RIGHT_OUTPUTS)
+      // InstanceLabs: FAN2 = right pump behind a 12 V buck (on/off only, never PWM), FAN3 = right
+      // valve (Clippard EV, needs >= 90 % of 24 V): any S > 0 is full on.
+      if (fan == 2 || fan == 3) speed = speed ? 255 : 0;
+    #endif
+
     #if ENABLED(SINGLENOZZLE_STANDBY_FAN)
       if (fan != active_extruder) {
         if (fan < EXTRUDERS) singlenozzle_fan_speed[fan] = speed;

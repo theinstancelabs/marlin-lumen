@@ -2573,6 +2573,12 @@
 #define IL_HOST_WATCHDOG
 
 /**
+ * InstanceLabs: FAN2 (right pump, 12 V buck) and FAN3 (right valve) are on/off only:
+ * M106 P2/P3 with any S > 0 drives full on (S255). Backstop for the host's fixed commands.
+ */
+#define IL_ONOFF_RIGHT_OUTPUTS
+
+/**
  * Realtime Reporting (requires EMERGENCY_PARSER)
  *
  * - Report position and state of the machine (like Grbl).
